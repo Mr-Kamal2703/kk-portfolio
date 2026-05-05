@@ -34,11 +34,15 @@
 
 <script type="text/babel">
 const { useState, useRef, useEffect } = React;
-const { motion, useScroll, useTransform } = window.Motion;
+const MotionLib = window.Motion || window.FramerMotion;
+if (!MotionLib) {
+  throw new Error('Motion library failed to load');
+}
+const { motion, useScroll, useTransform } = MotionLib;
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    SHARED UTILITIES
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function FadeIn({ children, delay = 0, duration = 0.7, y = 30, x = 0, style = {} }) {
   return (
     <motion.div
@@ -94,9 +98,37 @@ function GhostButton({ label, href, size = 'md' }) {
   );
 }
 
-/* ─────────────────────────────
+function AnimatedAboutChar({ char, index, total, scrollYProgress }) {
+  const start = index / total;
+  const end = (index + 1) / total;
+  const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
+  return (
+    <span style={{ position: 'relative', display: 'inline' }}>
+      <span style={{ opacity: 0, userSelect: 'none' }}>{char}</span>
+      <motion.span style={{ position: 'absolute', left: 0, top: 0, opacity }}>{char}</motion.span>
+    </span>
+  );
+}
+
+function AnimatedAboutText({ text, scrollYProgress }) {
+  return (
+    <>
+      {text.split('').map((char, i) => (
+        <AnimatedAboutChar
+          key={`${char}-${i}`}
+          char={char}
+          index={i}
+          total={text.length}
+          scrollYProgress={scrollYProgress}
+        />
+      ))}
+    </>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    HERO SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function HeroSection() {
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -124,7 +156,10 @@ function HeroSection() {
           position: 'relative', zIndex: 20, flexWrap: 'wrap', gap: '12px 20px',
         }}>
           {navLinks.map(({ label, id }) => (
-            <a key={id} onClick={() => scrollTo(id)} style={{
+            <a key={id} href={`#${id}`} onClick={(e) => {
+              e.preventDefault();
+              scrollTo(id);
+            }} style={{
               color: '#D7E2EA', fontWeight: 500,
               fontSize: 'clamp(0.875rem, 1.2vw, 1.35rem)',
               textTransform: 'uppercase', letterSpacing: '0.1em',
@@ -193,9 +228,9 @@ function HeroSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    MARQUEE SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 const MARQUEE_ITEMS = [
   'React', 'Next.js', 'Tailwind CSS', 'JavaScript', 'Node.js', 'Framer Motion',
   'GSAP', 'Figma', 'Firebase', 'MySQL', 'REST APIs', 'TypeScript',
@@ -238,7 +273,7 @@ function MarqueeSection() {
               textTransform: 'uppercase', letterSpacing: '0.08em',
               whiteSpace: 'nowrap',
             }}>{item}</span>
-            <span style={{ color: 'rgba(215,226,234,0.2)', fontSize: '20px', flexShrink: 0 }}>✦</span>
+            <span style={{ color: 'rgba(215,226,234,0.2)', fontSize: '20px', flexShrink: 0 }}>*</span>
           </div>
         ))}
       </div>
@@ -246,9 +281,9 @@ function MarqueeSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    ABOUT SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function AboutSection() {
   const MOON_URL  = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png';
   const BLOB_URL  = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png';
@@ -257,9 +292,7 @@ function AboutSection() {
 
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.2'] });
-  const text = "I'm a passionate web developer focused on creating modern, responsive, and visually engaging websites. I enjoy turning creative ideas into interactive digital experiences — especially cinematic and user-friendly designs that leave a strong impression. My approach combines clean code, attention to detail, and creative problem-solving to deliver high-quality websites that are both functional and visually appealing.";
-  const chars = text.split('');
-
+  const text = "I'm a passionate web developer focused on creating modern, responsive, and visually engaging websites. I enjoy turning creative ideas into interactive digital experiences - especially cinematic and user-friendly designs that leave a strong impression. My approach combines clean code, attention to detail, and creative problem-solving to deliver high-quality websites that are both functional and visually appealing.";
   return (
     <section id="about" style={{
       minHeight: '100vh', background: '#0C0C0C',
@@ -300,25 +333,15 @@ function AboutSection() {
           fontSize: 'clamp(0.95rem, 1.8vw, 1.25rem)',
           color: '#D7E2EA', position: 'relative',
         }}>
-          {chars.map((char, i) => {
-            const start = i / chars.length;
-            const end = (i + 1) / chars.length;
-            const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
-            return (
-              <span key={i} style={{ position: 'relative', display: 'inline' }}>
-                <span style={{ opacity: 0, userSelect: 'none' }}>{char}</span>
-                <motion.span style={{ position: 'absolute', left: 0, top: 0, opacity }}>{char}</motion.span>
-              </span>
-            );
-          })}
+          <AnimatedAboutText text={text} scrollYProgress={scrollYProgress} />
         </p>
 
         {/* Info pills */}
         <FadeIn delay={0.2} y={20}>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
-              { label: '📧', val: 'kk40232@gmail.com' },
-              { label: '📞', val: '+91 7903098527' },
+              { label: 'Email', val: 'kk40232@gmail.com' },
+              { label: 'Phone', val: '+91 7903098527' },
             ].map(({ label, val }) => (
               <div key={val} style={{
                 background: 'rgba(215,226,234,0.06)',
@@ -342,9 +365,9 @@ function AboutSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    SKILLS SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 const SKILL_GROUPS = [
   {
     title: 'Front-End',
@@ -435,12 +458,12 @@ function SkillsSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    SERVICES SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 const SERVICES = [
-  { num: '01', name: 'Custom Website Development', desc: 'Full-stack websites tailored to your brand — from landing pages to complex web apps, built with React, Next.js, and modern tooling.' },
-  { num: '02', name: 'Cinematic UI/UX Design', desc: 'Visually stunning, immersive designs with smooth animations, parallax effects, and glassmorphism — websites that leave a lasting impression.' },
+  { num: '01', name: 'Custom Website Development', desc: 'Full-stack websites tailored to your brand - from landing pages to complex web apps, built with React, Next.js, and modern tooling.' },
+  { num: '02', name: 'Cinematic UI/UX Design', desc: 'Visually stunning, immersive designs with smooth animations, parallax effects, and glassmorphism - websites that leave a lasting impression.' },
   { num: '03', name: 'Restaurant & E-commerce', desc: 'Food ordering systems, booking & reservation platforms, and e-commerce stores optimized for conversion and usability.' },
   { num: '04', name: 'React & Tailwind Development', desc: 'Component-based frontends with clean, maintainable code. Figma-to-React conversion, responsive mobile-first implementation.' },
   { num: '05', name: 'Performance & Deployment', desc: 'Website optimization, API integration, admin dashboards, and deployment on Netlify, Render, and other platforms.' },
@@ -492,9 +515,9 @@ function ServicesSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    PROJECTS SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 const PROJECTS = [
   {
     num: '01', category: 'Frontend', name: 'Cinematic Landing Page',
@@ -510,7 +533,7 @@ const PROJECTS = [
   },
   {
     num: '03', category: 'UI/UX + Dev', name: 'Portfolio & Branding Site',
-    desc: 'A high-fidelity portfolio designed in Figma and converted to React — featuring smooth scroll animations, responsive layouts, and cinematic visual storytelling.',
+    desc: 'A high-fidelity portfolio designed in Figma and converted to React - featuring smooth scroll animations, responsive layouts, and cinematic visual storytelling.',
     tags: ['Figma', 'Next.js', 'Framer Motion', 'Firebase'],
     theme: 'branding',
   },
@@ -1368,9 +1391,9 @@ const projectWindowDot = (color) => ({
   background: color,
 });
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    CONTACT SECTION
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function ContactSection() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
@@ -1445,8 +1468,8 @@ function ContactSection() {
         <FadeIn delay={0.15} y={20}>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 'clamp(28px, 3vw, 44px)' }}>
             {[
-              { icon: '✉', label: 'kk40232@gmail.com', href: 'mailto:kk40232@gmail.com' },
-              { icon: '☎', label: '+91 7903098527', href: 'tel:+917903098527' },
+              { icon: 'Email', label: 'kk40232@gmail.com', href: 'mailto:kk40232@gmail.com' },
+              { icon: 'Phone', label: '+91 7903098527', href: 'tel:+917903098527' },
             ].map(({ icon, label, href }) => (
               <a key={href} href={href} style={{
                 display: 'flex', alignItems: 'center', gap: '10px',
@@ -1475,7 +1498,7 @@ function ContactSection() {
               color: '#D7E2EA', fontWeight: 300,
               fontSize: '1rem', letterSpacing: '0.06em',
             }}>
-              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>✓</div>
+              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>OK</div>
               Message sent successfully.
             </div>
           ) : (
@@ -1517,9 +1540,9 @@ function ContactSection() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    FOOTER
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function Footer() {
   return (
     <footer style={{
@@ -1537,7 +1560,7 @@ function Footer() {
       }}>Kamal Kishor</div>
       <div style={{ fontSize: '11px', fontWeight: 300, color: 'rgba(215,226,234,0.3)',
         letterSpacing: '0.1em', textTransform: 'uppercase',
-      }}>© 2025 · Web Developer</div>
+      }}>(c) 2025 | Web Developer</div>
       <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
         <a
           href="https://www.instagram.com/rockstar_kamal_143?igsh=MjBmZGwya3N4bjls"
@@ -1592,9 +1615,9 @@ function Footer() {
   );
 }
 
-/* ─────────────────────────────
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    APP ROOT
-───────────────────────────── */
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function App() {
   return (
     <div style={{ overflowX: 'clip', background: '#0C0C0C' }}>
