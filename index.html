@@ -16,12 +16,164 @@
     color: #D7E2EA;
     overflow-x: clip;
   }
+  body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+  a, button, input, textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
   ::selection { background: rgba(182,0,168,0.3); color: #fff; }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #0C0C0C; }
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+  @media (max-width: 1024px) {
+    #hero h1 {
+      font-size: clamp(3rem, 15vw, 10rem) !important;
+    }
+
+    .site-footer {
+      justify-content: center !important;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #hero {
+      min-height: auto !important;
+    }
+
+    .site-nav {
+      width: 100% !important;
+      justify-content: center !important;
+      gap: 10px 16px !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+
+    .hero-copy {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+
+    #hero h1 {
+      font-size: clamp(2.9rem, 18vw, 5.6rem) !important;
+      white-space: normal !important;
+      line-height: 0.94 !important;
+    }
+
+    .hero-bottom {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      padding-bottom: 28px !important;
+    }
+
+    .hero-bottom p {
+      max-width: 100% !important;
+    }
+
+    .skills-marquee .marquee-item {
+      width: 170px !important;
+      gap: 10px !important;
+    }
+
+    #about {
+      min-height: auto !important;
+      padding: 72px 16px !important;
+    }
+
+    #about img {
+      display: none !important;
+    }
+
+    #about p {
+      font-size: clamp(0.95rem, 4vw, 1.05rem) !important;
+    }
+
+    #skills {
+      padding: 56px 16px !important;
+    }
+
+    .service-item {
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+
+    .service-num {
+      min-width: auto !important;
+      font-size: clamp(2.2rem, 16vw, 4.5rem) !important;
+    }
+
+    #services {
+      padding: 52px 16px !important;
+    }
+
+    #projects {
+      padding: 50px 16px 100px !important;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    .project-preview {
+      height: 180px !important;
+    }
+
+    #contact {
+      padding: 52px 16px !important;
+      margin-top: -24px !important;
+    }
+
+    .contact-pills {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .contact-pills a {
+      justify-content: center !important;
+    }
+
+    .site-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 14px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #hero nav {
+      padding-left: 14px !important;
+      padding-right: 14px !important;
+    }
+
+    .about-inner {
+      gap: 24px !important;
+      max-width: 100% !important;
+    }
+
+    #contact input,
+    #contact textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -150,7 +302,7 @@ function HeroSection() {
     }}>
       {/* Navbar */}
       <FadeIn delay={0} y={-20}>
-        <nav style={{
+        <nav className="site-nav" style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           padding: 'clamp(18px, 3vw, 30px) clamp(20px, 4vw, 56px)',
           position: 'relative', zIndex: 20, flexWrap: 'wrap', gap: '12px 20px',
@@ -174,7 +326,7 @@ function HeroSection() {
       </FadeIn>
 
       {/* Big heading */}
-      <div style={{ overflow: 'hidden', padding: '0 clamp(12px, 2.5vw, 40px)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div className="hero-copy" style={{ overflow: 'hidden', padding: '0 clamp(12px, 2.5vw, 40px)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <FadeIn delay={0.1} y={50}>
           <p style={{
             color: 'rgba(215,226,234,0.4)', fontWeight: 300,
@@ -207,7 +359,7 @@ function HeroSection() {
 
       {/* Bottom bar */}
       <FadeIn delay={0.4} y={20}>
-        <div style={{
+        <div className="hero-bottom" style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
           padding: '0 clamp(20px, 4vw, 56px)', paddingBottom: 'clamp(28px, 4vw, 48px)',
           flexWrap: 'wrap', gap: '16px', width: '100%',
@@ -254,7 +406,7 @@ function MarqueeSection() {
   const mod = (total * itemW);
 
   return (
-    <section style={{
+    <section className="skills-marquee" style={{
       background: '#0C0C0C', overflow: 'hidden',
       padding: 'clamp(48px, 6vw, 80px) 0',
       borderTop: '1px solid rgba(215,226,234,0.06)',
@@ -263,7 +415,7 @@ function MarqueeSection() {
       <div style={{ display: 'flex', gap: '0', willChange: 'transform',
         transform: `translateX(-${offset % mod}px)` }}>
         {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-          <div key={i} style={{
+          <div key={i} className="marquee-item" style={{
             display: 'flex', alignItems: 'center', gap: '16px',
             flexShrink: 0, width: `${itemW}px`,
           }}>
@@ -315,7 +467,7 @@ function AboutSection() {
         <img src={GROUP_URL} alt="" style={{ width: 'clamp(90px, 12vw, 200px)' }} />
       </FadeIn>
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(32px, 4vw, 56px)', position: 'relative', zIndex: 2, maxWidth: '700px' }}>
+      <div className="about-inner" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(32px, 4vw, 56px)', position: 'relative', zIndex: 2, maxWidth: '700px' }}>
         <FadeIn delay={0} y={40}>
           <h2 style={{
             fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
@@ -427,7 +579,7 @@ function SkillsSection() {
         }}>Skills</h2>
       </FadeIn>
 
-      <div style={{
+      <div className="service-item" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
         gap: 'clamp(20px, 3vw, 40px)',
@@ -478,7 +630,7 @@ function ServiceItem({ num, name, desc, delay }) {
         padding: 'clamp(20px, 3.5vw, 44px) 0',
         borderBottom: '1px solid rgba(12,12,12,0.15)',
       }}>
-        <div style={{
+        <div className="service-num" style={{
           fontSize: 'clamp(2.2rem, 7vw, 7.5rem)', fontWeight: 900,
           color: '#0C0C0C', lineHeight: 1, flexShrink: 0,
           minWidth: 'clamp(56px, 9vw, 130px)',
@@ -916,7 +1068,7 @@ function ProjectsSectionV2() {
           </p>
         </FadeIn>
 
-        <div style={{
+          <div className="projects-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: 'clamp(18px, 2.4vw, 28px)',
@@ -930,7 +1082,7 @@ function ProjectsSectionV2() {
                 overflow: 'hidden',
                 height: '100%',
               }}>
-                <div style={{ height: '210px' }}>
+                <div className="project-preview" style={{ height: '210px' }}>
                   <ProjectPreviewArtV2 theme={project.theme} />
                 </div>
                 <div style={{ padding: '20px' }}>
@@ -1466,7 +1618,7 @@ function ContactSection() {
 
         {/* Contact info row */}
         <FadeIn delay={0.15} y={20}>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 'clamp(28px, 3vw, 44px)' }}>
+          <div className="contact-pills" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 'clamp(28px, 3vw, 44px)' }}>
             {[
               { icon: 'Email', label: 'kk40232@gmail.com', href: 'mailto:kk40232@gmail.com' },
               { icon: 'Phone', label: '+91 7903098527', href: 'tel:+917903098527' },
@@ -1545,7 +1697,7 @@ function ContactSection() {
 Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 function Footer() {
   return (
-    <footer style={{
+    <footer className="site-footer" style={{
       background: '#0C0C0C',
       padding: 'clamp(28px, 4vw, 48px) clamp(20px, 4vw, 56px)',
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
