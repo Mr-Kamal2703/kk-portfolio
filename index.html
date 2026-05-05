@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamal Kishor - Web Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  html, body, #root {
+    background: #0C0C0C;
+    font-family: 'Kanit', sans-serif;
+    color: #D7E2EA;
+    overflow-x: clip;
+  }
+  ::selection { background: rgba(182,0,168,0.3); color: #fff; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0C0C0C; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/framer-motion@10.18.0/dist/framer-motion.js"></script>
+
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+const MotionLib = window.Motion || window.FramerMotion;
+if (!MotionLib) {
+  throw new Error('Motion library failed to load');
+}
+const { motion, useScroll, useTransform } = MotionLib;
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   SHARED UTILITIES
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function FadeIn({ children, delay = 0, duration = 0.7, y = 30, x = 0, style = {} }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y, x }}
+      whileInView={{ opacity: 1, y: 0, x: 0 }}
+      viewport={{ once: true, margin: '40px', amount: 0 }}
+      transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      style={style}
+    >{children}</motion.div>
+  );
+}
+
+function ContactButton({ label = 'Contact Me', href, size = 'md' }) {
+  const padMap = { sm: '10px 28px', md: '14px 44px', lg: '18px 52px' };
+  const szMap  = { sm: '12px', md: '14px', lg: '16px' };
+  const Tag = href ? 'a' : 'button';
+  return (
+    <Tag href={href}
+      onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+      onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+      style={{
+        background: 'linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)',
+        borderRadius: '9999px', padding: padMap[size] || padMap.md,
+        color: 'white', fontFamily: "'Kanit', sans-serif",
+        fontSize: szMap[size] || szMap.md, fontWeight: 500,
+        textTransform: 'uppercase', letterSpacing: '0.15em',
+        boxShadow: '0px 4px 4px rgba(181,1,167,0.25), 4px 4px 12px #7721B1 inset',
+        outline: '2px solid white', outlineOffset: '-3px',
+        border: 'none', transition: 'opacity 200ms ease',
+        whiteSpace: 'nowrap', textDecoration: 'none', display: 'inline-block',
+      }}
+    >{label}</Tag>
+  );
+}
+
+function GhostButton({ label, href, size = 'md' }) {
+  const [hov, setHov] = useState(false);
+  const Tag = href ? 'a' : 'button';
+  return (
+    <Tag href={href}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        background: hov ? 'rgba(215,226,234,0.1)' : 'transparent',
+        border: '2px solid #D7E2EA', borderRadius: '9999px',
+        padding: size === 'sm' ? '10px 28px' : '12px 36px',
+        color: '#D7E2EA', fontFamily: "'Kanit', sans-serif",
+        fontSize: size === 'sm' ? '11px' : '13px', fontWeight: 500,
+        textTransform: 'uppercase', letterSpacing: '0.15em',
+        transition: 'background 200ms ease',
+        whiteSpace: 'nowrap', textDecoration: 'none', display: 'inline-block',
+      }}
+    >{label}</Tag>
+  );
+}
+
+function AnimatedAboutChar({ char, index, total, scrollYProgress }) {
+  const start = index / total;
+  const end = (index + 1) / total;
+  const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
+  return (
+    <span style={{ position: 'relative', display: 'inline' }}>
+      <span style={{ opacity: 0, userSelect: 'none' }}>{char}</span>
+      <motion.span style={{ position: 'absolute', left: 0, top: 0, opacity }}>{char}</motion.span>
+    </span>
+  );
+}
+
+function AnimatedAboutText({ text, scrollYProgress }) {
+  return (
+    <>
+      {text.split('').map((char, i) => (
+        <AnimatedAboutChar
+          key={`${char}-${i}`}
+          char={char}
+          index={i}
+          total={text.length}
+          scrollYProgress={scrollYProgress}
+        />
+      ))}
+    </>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   HERO SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function HeroSection() {
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' });
+  };
+
+  const navLinks = [
+    { label: 'About', id: 'about' },
+    { label: 'Skills', id: 'skills' },
+    { label: 'Projects', id: 'projects' },
+    { label: 'Contact', id: 'contact' },
+  ];
+
+  return (
+    <section id="hero" style={{
+      minHeight: '100vh', background: '#0C0C0C',
+      display: 'flex', flexDirection: 'column',
+      overflowX: 'clip', position: 'relative',
+    }}>
+      {/* Navbar */}
+      <FadeIn delay={0} y={-20}>
+        <nav style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: 'clamp(18px, 3vw, 30px) clamp(20px, 4vw, 56px)',
+          position: 'relative', zIndex: 20, flexWrap: 'wrap', gap: '12px 20px',
+        }}>
+          {navLinks.map(({ label, id }) => (
+            <a key={id} href={`#${id}`} onClick={(e) => {
+              e.preventDefault();
+              scrollTo(id);
+            }} style={{
+              color: '#D7E2EA', fontWeight: 500,
+              fontSize: 'clamp(0.875rem, 1.2vw, 1.35rem)',
+              textTransform: 'uppercase', letterSpacing: '0.1em',
+              textDecoration: 'none',
+              transition: 'opacity 200ms ease',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.6'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >{label}</a>
+          ))}
+        </nav>
+      </FadeIn>
+
+      {/* Big heading */}
+      <div style={{ overflow: 'hidden', padding: '0 clamp(12px, 2.5vw, 40px)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <FadeIn delay={0.1} y={50}>
+          <p style={{
+            color: 'rgba(215,226,234,0.4)', fontWeight: 300,
+            fontSize: 'clamp(0.75rem, 1.5vw, 1.1rem)',
+            textTransform: 'uppercase', letterSpacing: '0.3em',
+            marginBottom: 'clamp(8px, 1.5vw, 16px)',
+          }}>Web Developer</p>
+        </FadeIn>
+        <FadeIn delay={0.18} y={60}>
+          <h1 style={{
+            fontSize: 'clamp(3.5rem, 14vw, 18rem)', fontWeight: 900,
+            textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.92,
+            whiteSpace: 'nowrap',
+            background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>Kamal</h1>
+        </FadeIn>
+        <FadeIn delay={0.26} y={60}>
+          <h1 style={{
+            fontSize: 'clamp(3.5rem, 14vw, 18rem)', fontWeight: 900,
+            textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.92,
+            whiteSpace: 'nowrap',
+            background: 'linear-gradient(180deg, #BBCCD7 0%, #646973 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>Kishor</h1>
+        </FadeIn>
+      </div>
+
+      {/* Bottom bar */}
+      <FadeIn delay={0.4} y={20}>
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+          padding: '0 clamp(20px, 4vw, 56px)', paddingBottom: 'clamp(28px, 4vw, 48px)',
+          flexWrap: 'wrap', gap: '16px', width: '100%',
+        }}>
+          <p style={{
+            color: '#D7E2EA', fontWeight: 300,
+            fontSize: 'clamp(0.7rem, 1.4vw, 1.3rem)',
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+            lineHeight: 1.4, maxWidth: 'clamp(200px, 22vw, 340px)',
+          }}>
+            Creating cinematic experiences<br />through web design
+          </p>
+          <ContactButton label="Hire Me" href="mailto:kk40232@gmail.com" />
+        </div>
+      </FadeIn>
+
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   MARQUEE SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+const MARQUEE_ITEMS = [
+  'React', 'Next.js', 'Tailwind CSS', 'JavaScript', 'Node.js', 'Framer Motion',
+  'GSAP', 'Figma', 'Firebase', 'MySQL', 'REST APIs', 'TypeScript',
+  'HTML5', 'CSS3', 'Git', 'Responsive Design',
+];
+
+function MarqueeSection() {
+  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    let raf;
+    const tick = () => {
+      setOffset(o => o + 0.5);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const itemW = 220;
+  const total = MARQUEE_ITEMS.length;
+  const mod = (total * itemW);
+
+  return (
+    <section style={{
+      background: '#0C0C0C', overflow: 'hidden',
+      padding: 'clamp(48px, 6vw, 80px) 0',
+      borderTop: '1px solid rgba(215,226,234,0.06)',
+      borderBottom: '1px solid rgba(215,226,234,0.06)',
+    }}>
+      <div style={{ display: 'flex', gap: '0', willChange: 'transform',
+        transform: `translateX(-${offset % mod}px)` }}>
+        {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+          <div key={i} style={{
+            display: 'flex', alignItems: 'center', gap: '16px',
+            flexShrink: 0, width: `${itemW}px`,
+          }}>
+            <span style={{
+              color: '#D7E2EA', fontWeight: 500,
+              fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
+              textTransform: 'uppercase', letterSpacing: '0.08em',
+              whiteSpace: 'nowrap',
+            }}>{item}</span>
+            <span style={{ color: 'rgba(215,226,234,0.2)', fontSize: '20px', flexShrink: 0 }}>*</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   ABOUT SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function AboutSection() {
+  const MOON_URL  = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png';
+  const BLOB_URL  = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png';
+  const LEGO_URL  = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png';
+  const GROUP_URL = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png';
+
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.8', 'end 0.2'] });
+  const text = "I'm a passionate web developer focused on creating modern, responsive, and visually engaging websites. I enjoy turning creative ideas into interactive digital experiences - especially cinematic and user-friendly designs that leave a strong impression. My approach combines clean code, attention to detail, and creative problem-solving to deliver high-quality websites that are both functional and visually appealing.";
+  return (
+    <section id="about" style={{
+      minHeight: '100vh', background: '#0C0C0C',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      padding: 'clamp(80px, 10vw, 140px) clamp(20px, 4vw, 48px)',
+      position: 'relative', overflow: 'hidden',
+    }}>
+      {/* Decorative corner images */}
+      <FadeIn delay={0.1} x={-80} y={0} duration={0.9} style={{ position: 'absolute', top: '4%', left: 'clamp(8px, 4vw, 60px)' }}>
+        <img src={MOON_URL} alt="" style={{ width: 'clamp(80px, 12vw, 190px)' }} />
+      </FadeIn>
+      <FadeIn delay={0.25} x={-80} y={0} duration={0.9} style={{ position: 'absolute', bottom: '8%', left: 'clamp(12px, 8vw, 120px)' }}>
+        <img src={BLOB_URL} alt="" style={{ width: 'clamp(70px, 10vw, 160px)' }} />
+      </FadeIn>
+      <FadeIn delay={0.15} x={80} y={0} duration={0.9} style={{ position: 'absolute', top: '4%', right: 'clamp(8px, 4vw, 60px)' }}>
+        <img src={LEGO_URL} alt="" style={{ width: 'clamp(80px, 12vw, 190px)' }} />
+      </FadeIn>
+      <FadeIn delay={0.3} x={80} y={0} duration={0.9} style={{ position: 'absolute', bottom: '8%', right: 'clamp(12px, 8vw, 120px)' }}>
+        <img src={GROUP_URL} alt="" style={{ width: 'clamp(90px, 12vw, 200px)' }} />
+      </FadeIn>
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(32px, 4vw, 56px)', position: 'relative', zIndex: 2, maxWidth: '700px' }}>
+        <FadeIn delay={0} y={40}>
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+            textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+            textAlign: 'center',
+            background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>About me</h2>
+        </FadeIn>
+
+        {/* Animated text */}
+        <p ref={ref} style={{
+          fontWeight: 500, textAlign: 'center', lineHeight: 1.7,
+          fontSize: 'clamp(0.95rem, 1.8vw, 1.25rem)',
+          color: '#D7E2EA', position: 'relative',
+        }}>
+          <AnimatedAboutText text={text} scrollYProgress={scrollYProgress} />
+        </p>
+
+        {/* Info pills */}
+        <FadeIn delay={0.2} y={20}>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[
+              { label: 'Email', val: 'kk40232@gmail.com' },
+              { label: 'Phone', val: '+91 7903098527' },
+            ].map(({ label, val }) => (
+              <div key={val} style={{
+                background: 'rgba(215,226,234,0.06)',
+                border: '1px solid rgba(215,226,234,0.12)',
+                borderRadius: '9999px', padding: '8px 20px',
+                fontSize: 'clamp(0.75rem, 1.2vw, 0.95rem)', fontWeight: 300,
+                color: '#D7E2EA', letterSpacing: '0.04em',
+                display: 'flex', alignItems: 'center', gap: '8px',
+              }}>
+                <span>{label}</span><span style={{ opacity: 0.7 }}>{val}</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.3} y={20}>
+          <ContactButton label="Get In Touch" href="mailto:kk40232@gmail.com" />
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   SKILLS SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+const SKILL_GROUPS = [
+  {
+    title: 'Front-End',
+    skills: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'React', 'Next.js', 'Tailwind CSS', 'Responsive Design', 'Flexbox & Grid'],
+  },
+  {
+    title: 'Animation & UI',
+    skills: ['Framer Motion', 'GSAP', 'Smooth Scrolling', 'Glassmorphism', 'Parallax Effects', 'Cinematic UI', 'Interactive Animations'],
+  },
+  {
+    title: 'Back-End & DB',
+    skills: ['Node.js', 'REST APIs', 'MySQL', 'Firebase'],
+  },
+  {
+    title: 'Tools & Design',
+    skills: ['Git & GitHub', 'Figma', 'Wireframing', 'Prototyping', 'VS Code', 'Netlify', 'Render'],
+  },
+];
+
+function SkillTag({ label, i }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: i * 0.03, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        background: hov ? 'rgba(182,0,168,0.12)' : 'rgba(215,226,234,0.05)',
+        border: hov ? '1px solid rgba(182,0,168,0.4)' : '1px solid rgba(215,226,234,0.1)',
+        borderRadius: '8px', padding: '8px 16px',
+        fontSize: 'clamp(0.75rem, 1.1vw, 0.9rem)', fontWeight: 400,
+        color: hov ? '#D7E2EA' : 'rgba(215,226,234,0.7)',
+        letterSpacing: '0.04em',
+        transition: 'all 200ms ease', whiteSpace: 'nowrap',
+      }}
+    >{label}</motion.div>
+  );
+}
+
+function SkillsSection() {
+  return (
+    <section id="skills" style={{
+      background: '#0C0C0C',
+      padding: 'clamp(64px, 8vw, 120px) clamp(20px, 5vw, 64px)',
+    }}>
+      <FadeIn delay={0} y={40}>
+        <h2 style={{
+          fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+          textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+          textAlign: 'center', marginBottom: 'clamp(40px, 6vw, 80px)',
+          background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>Skills</h2>
+      </FadeIn>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: 'clamp(20px, 3vw, 40px)',
+        maxWidth: '1100px', margin: '0 auto',
+      }}>
+        {SKILL_GROUPS.map((group, gi) => (
+          <FadeIn key={group.title} delay={gi * 0.1} y={30}>
+            <div style={{
+              background: 'rgba(215,226,234,0.03)',
+              border: '1px solid rgba(215,226,234,0.08)',
+              borderRadius: '24px', padding: 'clamp(20px, 2.5vw, 32px)',
+            }}>
+              <div style={{
+                fontSize: 'clamp(0.7rem, 1vw, 0.8rem)', fontWeight: 600,
+                textTransform: 'uppercase', letterSpacing: '0.18em',
+                color: 'rgba(182,0,168,0.8)', marginBottom: '16px',
+              }}>{group.title}</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {group.skills.map((s, si) => (
+                  <SkillTag key={s} label={s} i={gi * 8 + si} />
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   SERVICES SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+const SERVICES = [
+  { num: '01', name: 'Custom Website Development', desc: 'Full-stack websites tailored to your brand - from landing pages to complex web apps, built with React, Next.js, and modern tooling.' },
+  { num: '02', name: 'Cinematic UI/UX Design', desc: 'Visually stunning, immersive designs with smooth animations, parallax effects, and glassmorphism - websites that leave a lasting impression.' },
+  { num: '03', name: 'Restaurant & E-commerce', desc: 'Food ordering systems, booking & reservation platforms, and e-commerce stores optimized for conversion and usability.' },
+  { num: '04', name: 'React & Tailwind Development', desc: 'Component-based frontends with clean, maintainable code. Figma-to-React conversion, responsive mobile-first implementation.' },
+  { num: '05', name: 'Performance & Deployment', desc: 'Website optimization, API integration, admin dashboards, and deployment on Netlify, Render, and other platforms.' },
+];
+
+function ServiceItem({ num, name, desc, delay }) {
+  return (
+    <FadeIn delay={delay} y={24}>
+      <div style={{
+        display: 'flex', alignItems: 'flex-start',
+        gap: 'clamp(12px, 3vw, 40px)',
+        padding: 'clamp(20px, 3.5vw, 44px) 0',
+        borderBottom: '1px solid rgba(12,12,12,0.15)',
+      }}>
+        <div style={{
+          fontSize: 'clamp(2.2rem, 7vw, 7.5rem)', fontWeight: 900,
+          color: '#0C0C0C', lineHeight: 1, flexShrink: 0,
+          minWidth: 'clamp(56px, 9vw, 130px)',
+        }}>{num}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: 'clamp(4px, 0.8vw, 10px)' }}>
+          <div style={{ fontSize: 'clamp(0.95rem, 2vw, 1.9rem)', fontWeight: 500, textTransform: 'uppercase', color: '#0C0C0C' }}>{name}</div>
+          <div style={{ fontSize: 'clamp(0.8rem, 1.5vw, 1.1rem)', fontWeight: 300, lineHeight: 1.65, color: '#0C0C0C', opacity: 0.55, maxWidth: '600px' }}>{desc}</div>
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
+function ServicesSection() {
+  return (
+    <section id="services" style={{
+      background: '#FFFFFF',
+      borderTopLeftRadius: 'clamp(40px, 4vw, 60px)',
+      borderTopRightRadius: 'clamp(40px, 4vw, 60px)',
+      padding: 'clamp(56px, 7vw, 112px) clamp(20px, 5vw, 64px)',
+    }}>
+      <FadeIn delay={0} y={40}>
+        <h2 style={{
+          fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+          textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+          color: '#0C0C0C', textAlign: 'center',
+          marginBottom: 'clamp(40px, 6vw, 96px)',
+        }}>Services</h2>
+      </FadeIn>
+      <div style={{ maxWidth: '960px', margin: '0 auto', borderTop: '1px solid rgba(12,12,12,0.15)' }}>
+        {SERVICES.map((s, i) => <ServiceItem key={s.num} {...s} delay={i * 0.08} />)}
+      </div>
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   PROJECTS SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+const PROJECTS = [
+  {
+    num: '01', category: 'Frontend', name: 'Cinematic Landing Page',
+    desc: 'A full-screen immersive landing page with GSAP animations, parallax scrolling, and glassmorphism effects. Built with React and Tailwind CSS.',
+    tags: ['React', 'GSAP', 'Tailwind CSS', 'Framer Motion'],
+    theme: 'cinema',
+  },
+  {
+    num: '02', category: 'Full Stack', name: 'Restaurant Ordering System',
+    desc: 'A complete food ordering and reservation platform with real-time menu management, cart system, and admin dashboard. Built with React, Node.js, and MySQL.',
+    tags: ['React', 'Node.js', 'MySQL', 'REST API'],
+    theme: 'restaurant',
+  },
+  {
+    num: '03', category: 'UI/UX + Dev', name: 'Portfolio & Branding Site',
+    desc: 'A high-fidelity portfolio designed in Figma and converted to React - featuring smooth scroll animations, responsive layouts, and cinematic visual storytelling.',
+    tags: ['Figma', 'Next.js', 'Framer Motion', 'Firebase'],
+    theme: 'branding',
+  },
+];
+
+function ProjectVisual({ project }) {
+  if (project.theme === 'cinema') {
+    return (
+      <div style={visualBase('#08111f', '#122a4a')}>
+        <div style={glow('35%', '28%', '#b600a8', 150)} />
+        <div style={glow('78%', '68%', '#6e2ad1', 120)} />
+        <div style={frameStyle('18px', '20px', '18px', '20px', 'rgba(255,255,255,0.08)')}>
+          <div style={browserBar}>
+            <span style={dotStyle('#ff5f57')} />
+            <span style={dotStyle('#febc2e')} />
+            <span style={dotStyle('#28c840')} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.25fr 0.75fr', gap: '16px', height: '100%' }}>
+            <div style={heroPanel}>
+              <div style={heroLabel}>Motion-first hero concept</div>
+              <div style={{ marginTop: '14px', width: '72%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.28)' }} />
+              <div style={{ marginTop: '10px', width: '56%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.16)' }} />
+              <div style={{ marginTop: '18px', width: '42%', height: '34px', borderRadius: '999px', background: 'linear-gradient(135deg, #b600a8, #6e2ad1)' }} />
+            </div>
+            <div style={{ display: 'grid', gap: '12px' }}>
+              <div style={miniCard('#ffffff14', 'rgba(255,255,255,0.22)')} />
+              <div style={miniCard('#ffffff0f', 'rgba(255,255,255,0.16)')} />
+              <div style={miniCard('#ffffff0c', 'rgba(255,255,255,0.12)')} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.theme === 'restaurant') {
+    return (
+      <div style={visualBase('#140b10', '#3a1821')}>
+        <div style={glow('30%', '28%', '#ff9f43', 140)} />
+        <div style={glow('78%', '70%', '#ffcf74', 100)} />
+        <div style={frameStyle('18px', '20px', '18px', '20px', 'rgba(255,255,255,0.06)')}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div style={{ fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.48)' }}>Restaurant Admin</div>
+            <div style={{ width: '82px', height: '22px', borderRadius: '999px', background: 'rgba(255,159,67,0.24)' }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 0.9fr', gap: '16px', height: '100%' }}>
+            <div style={{ display: 'grid', gap: '10px' }}>
+              {['Biryani Bowl', 'Paneer Wrap', 'Cold Coffee'].map((item, idx) => (
+                <div key={item} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  borderRadius: '16px', padding: '12px 14px',
+                  background: idx === 0 ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                }}>
+                  <span style={{ color: '#fff', fontSize: '12px', fontWeight: 500 }}>{item}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: '10px' }}>${(8 + idx * 2).toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{
+              borderRadius: '22px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              padding: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}>
+              <div style={{ alignSelf: 'center', width: '78px', height: '78px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #ffcf74, #ff9f43 60%, #6b2b17 100%)', boxShadow: '0 10px 24px rgba(0,0,0,0.24)' }} />
+              <div style={{ display: 'grid', gap: '8px' }}>
+                <div style={{ height: '10px', width: '72%', borderRadius: '999px', background: 'rgba(255,255,255,0.22)' }} />
+                <div style={{ height: '10px', width: '52%', borderRadius: '999px', background: 'rgba(255,255,255,0.14)' }} />
+                <div style={{ height: '30px', width: '100%', borderRadius: '12px', background: 'linear-gradient(135deg, #ff9f43, #ffcf74)' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={visualBase('#071713', '#143127')}>
+      <div style={glow('34%', '30%', '#59d39c', 140)} />
+      <div style={glow('80%', '72%', '#b8f3db', 96)} />
+      <div style={frameStyle('18px', '20px', '18px', '20px', 'rgba(255,255,255,0.07)')}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', height: '100%' }}>
+          <div style={{ display: 'grid', gap: '10px' }}>
+            <div style={{ height: '20px', width: '56%', borderRadius: '999px', background: 'rgba(255,255,255,0.22)' }} />
+            <div style={{ height: '12px', width: '78%', borderRadius: '999px', background: 'rgba(255,255,255,0.12)' }} />
+            <div style={{ height: '12px', width: '66%', borderRadius: '999px', background: 'rgba(255,255,255,0.08)' }} />
+            <div style={{
+              marginTop: '8px', height: '54px', borderRadius: '18px',
+              background: 'linear-gradient(135deg, rgba(89,211,156,0.24), rgba(184,243,219,0.12))',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }} />
+          </div>
+          <div style={{ display: 'grid', gap: '10px' }}>
+            <div style={{
+              height: '72px', borderRadius: '20px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              padding: '12px',
+            }}>
+              <div style={{ height: '10px', width: '48%', borderRadius: '999px', background: 'rgba(255,255,255,0.24)' }} />
+              <div style={{ height: '10px', width: '72%', borderRadius: '999px', background: 'rgba(255,255,255,0.12)', marginTop: '10px' }} />
+            </div>
+            <div style={{
+              height: '44px', borderRadius: '14px',
+              background: 'linear-gradient(135deg, rgba(89,211,156,0.35), rgba(184,243,219,0.18))',
+            }} />
+            <div style={{
+              height: '44px', borderRadius: '14px',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }} />
+          </div>
+        </div>
+      </div>
+      <div style={{
+        position: 'absolute', left: '22px', bottom: '16px', right: '22px',
+        height: '2px', borderRadius: '999px',
+        background: 'linear-gradient(90deg, rgba(89,211,156,0), rgba(184,243,219,0.8), rgba(89,211,156,0))',
+        opacity: 0.8,
+      }} />
+    </div>
+  );
+}
+
+const visualBase = (start, end) => ({
+  width: '100%',
+  height: '100%',
+  borderRadius: 'clamp(16px, 2vw, 28px)',
+  background: `linear-gradient(135deg, ${start}, ${end})`,
+  position: 'relative',
+  overflow: 'hidden',
+  padding: '18px',
+  boxSizing: 'border-box',
+});
+
+const frameStyle = (top, right, bottom, left, bg) => ({
+  position: 'relative',
+  zIndex: 2,
+  width: '100%',
+  height: '100%',
+  borderRadius: '20px',
+  padding: `${top} ${right} ${bottom} ${left}`,
+  background: bg,
+  border: '1px solid rgba(255,255,255,0.12)',
+  backdropFilter: 'blur(10px)',
+  boxSizing: 'border-box',
+});
+
+const browserBar = {
+  display: 'flex',
+  gap: '8px',
+  marginBottom: '16px',
+};
+
+const heroPanel = {
+  borderRadius: '20px',
+  padding: '18px',
+  background: 'linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04))',
+  border: '1px solid rgba(255,255,255,0.12)',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+};
+
+const heroLabel = {
+  fontSize: '11px',
+  letterSpacing: '0.14em',
+  textTransform: 'uppercase',
+  color: 'rgba(255,255,255,0.58)',
+};
+
+const miniCard = (bg, border) => ({
+  borderRadius: '18px',
+  background: bg,
+  border: `1px solid ${border}`,
+  minHeight: '64px',
+});
+
+const dotStyle = (color) => ({
+  width: '10px',
+  height: '10px',
+  borderRadius: '50%',
+  background: color,
+});
+
+const glow = (left, top, color, size) => ({
+  position: 'absolute',
+  left,
+  top,
+  width: `${size}px`,
+  height: `${size}px`,
+  borderRadius: '50%',
+  background: `radial-gradient(circle, ${color}55 0%, ${color}00 70%)`,
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'none',
+});
+
+function ProjectCard({ project, index, total, progress }) {
+  const targetScale = 1 - (total - 1 - index) * 0.03;
+  const scale = useTransform(progress, [0, 1], [1, targetScale]);
+
+  return (
+    <div style={{ position: 'sticky', top: `${88 + index * 24}px`, height: '80vh' }}>
+      <motion.div style={{
+        scale, height: '100%', background: '#0C0C0C',
+        border: '2px solid rgba(215,226,234,0.2)',
+        borderRadius: 'clamp(32px, 3.5vw, 52px)',
+        padding: 'clamp(20px, 2.5vw, 36px)',
+        display: 'flex', flexDirection: 'column',
+        gap: 'clamp(16px, 2vw, 24px)',
+        transformOrigin: 'top center', overflow: 'hidden',
+      }}>
+        {/* Top row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 'clamp(8px, 2vw, 20px)' }}>
+            <span style={{ fontSize: 'clamp(2rem, 6vw, 6rem)', fontWeight: 900, color: '#D7E2EA', lineHeight: 1 }}>{project.num}</span>
+            <div>
+              <div style={{ fontSize: '10px', fontWeight: 300, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(215,226,234,0.4)' }}>{project.category}</div>
+              <div style={{ fontSize: 'clamp(1rem, 2.2vw, 1.6rem)', fontWeight: 500, textTransform: 'uppercase', color: '#D7E2EA', letterSpacing: '0.03em' }}>{project.name}</div>
+            </div>
+          </div>
+          <GhostButton label="View Project" size="sm" />
+        </div>
+
+        {/* Content area */}
+        <div style={{ flex: 1, display: 'flex', gap: 'clamp(16px, 2vw, 28px)', minHeight: 0 }}>
+          {/* Left: description + tags */}
+          <div style={{ width: '38%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '20px' }}>
+            <p style={{
+              fontSize: 'clamp(0.8rem, 1.4vw, 1.05rem)', fontWeight: 300,
+              lineHeight: 1.7, color: 'rgba(215,226,234,0.65)',
+            }}>{project.desc}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {project.tags.map(tag => (
+                <span key={tag} style={{
+                  background: 'rgba(215,226,234,0.07)',
+                  border: '1px solid rgba(215,226,234,0.12)',
+                  borderRadius: '6px', padding: '4px 12px',
+                  fontSize: '10px', fontWeight: 400,
+                  textTransform: 'uppercase', letterSpacing: '0.08em',
+                  color: 'rgba(215,226,234,0.55)',
+                }}>{tag}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: project visual */}
+          <div style={{
+            flex: 1, borderRadius: 'clamp(16px, 2vw, 28px)',
+            background: project.color,
+            border: '1px solid rgba(215,226,234,0.06)',
+            display: 'flex', alignItems: 'stretch', justifyContent: 'stretch',
+            minHeight: 0, overflow: 'hidden', position: 'relative',
+          }}>
+            <ProjectVisual project={project} />
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+function ProjectsSection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
+
+  return (
+    <section id="projects" ref={containerRef} style={{
+      background: '#0C0C0C',
+      borderTopLeftRadius: 'clamp(40px, 4vw, 60px)',
+      borderTopRightRadius: 'clamp(40px, 4vw, 60px)',
+      marginTop: 'clamp(-40px, -3vw, -56px)',
+      zIndex: 10, position: 'relative',
+      padding: 'clamp(48px, 6vw, 88px) clamp(20px, 4vw, 48px) clamp(80px, 10vw, 150px)',
+    }}>
+      <FadeIn delay={0} y={40}>
+        <h2 style={{
+          fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+          textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+          textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 72px)',
+          background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>Projects</h2>
+      </FadeIn>
+      {PROJECTS.map((p, i) => (
+        <ProjectCard key={p.num} project={p} index={i} total={PROJECTS.length} progress={scrollYProgress} />
+      ))}
+    </section>
+  );
+}
+
+const PROJECTS_V2 = [
+  {
+    name: 'Portfolio Website',
+    desc: 'A personal portfolio site for showcasing work, skills, and contact details.',
+    tech: ['HTML', 'CSS', 'React'],
+    theme: 'portfolio',
+  },
+  {
+    name: 'Restaurant Website',
+    desc: 'A modern restaurant experience with menu presentation, reservations, and clear calls to action.',
+    tech: ['React', 'Responsive UI', 'Framer Motion'],
+    theme: 'restaurant',
+  },
+  {
+    name: 'E-commerce Website',
+    desc: 'A shopping interface with product discovery, featured items, and a clean purchase flow.',
+    tech: ['React', 'JavaScript', 'UI Design'],
+    theme: 'ecommerce',
+  },
+  {
+    name: 'Landing Page',
+    desc: 'A focused landing page built to highlight a product, service, or campaign.',
+    tech: ['HTML', 'CSS', 'Animation'],
+    theme: 'landing',
+  },
+  {
+    name: 'Booking Website',
+    desc: 'A booking flow for appointments, stays, or services with a simple and friendly user journey.',
+    tech: ['React', 'Forms', 'UX'],
+    theme: 'booking',
+  },
+  {
+    name: 'SaaS Website',
+    desc: 'A product-led website for a software company with feature highlights, pricing, and strong conversion flow.',
+    tech: ['React', 'Landing UI', 'Branding'],
+    theme: 'saas',
+  },
+  {
+    name: 'Mobile App UI Website',
+    desc: 'A responsive showcase for a mobile app experience, highlighting onboarding, features, and app screens.',
+    tech: ['UI Design', 'Responsive', 'Prototype'],
+    theme: 'mobile',
+  },
+  {
+    name: 'Dashboard/Admin Panel',
+    desc: 'An admin dashboard designed for tracking analytics, managing content, and handling business operations.',
+    tech: ['Dashboard UI', 'Data Views', 'Admin UX'],
+    theme: 'dashboard',
+  },
+];
+
+function ProjectsSectionV2() {
+  return (
+    <section id="projects" style={{
+      background: '#0C0C0C',
+      borderTopLeftRadius: 'clamp(40px, 4vw, 60px)',
+      borderTopRightRadius: 'clamp(40px, 4vw, 60px)',
+      marginTop: 'clamp(-40px, -3vw, -56px)',
+      zIndex: 10, position: 'relative',
+      padding: 'clamp(48px, 6vw, 88px) clamp(20px, 4vw, 48px) clamp(80px, 10vw, 150px)',
+    }}>
+      <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+        <FadeIn delay={0} y={40}>
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+            textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+            textAlign: 'center', marginBottom: '16px',
+            background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>Projects</h2>
+        </FadeIn>
+        <FadeIn delay={0.1} y={20}>
+          <p style={{
+            textAlign: 'center',
+            color: 'rgba(215,226,234,0.8)',
+            fontSize: 'clamp(0.95rem, 1.7vw, 1.15rem)',
+            lineHeight: 1.7,
+            maxWidth: '760px',
+            margin: '0 auto 42px',
+          }}>
+            In Projects Section is where you showcase your best work with project image, name, description, and technologies used.
+          </p>
+        </FadeIn>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: 'clamp(18px, 2.4vw, 28px)',
+        }}>
+          {PROJECTS_V2.map((project, i) => (
+            <FadeIn key={project.name} delay={i * 0.08} y={24}>
+              <div style={{
+                background: 'rgba(215,226,234,0.04)',
+                border: '1px solid rgba(215,226,234,0.1)',
+                borderRadius: '24px',
+                overflow: 'hidden',
+                height: '100%',
+              }}>
+                <div style={{ height: '210px' }}>
+                  <ProjectPreviewArtV2 theme={project.theme} />
+                </div>
+                <div style={{ padding: '20px' }}>
+                  <div style={{
+                    fontSize: '11px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.14em',
+                    color: 'rgba(182,0,168,0.8)',
+                    marginBottom: '10px',
+                  }}>Project</div>
+                  <h3 style={{
+                    fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.03em',
+                    marginBottom: '10px',
+                    color: '#D7E2EA',
+                  }}>{project.name}</h3>
+                  <p style={{
+                    color: 'rgba(215,226,234,0.68)',
+                    lineHeight: 1.7,
+                    fontSize: '0.95rem',
+                    marginBottom: '14px',
+                  }}>{project.desc}</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {project.tech.map((tech) => (
+                      <span key={tech} style={{
+                        background: 'rgba(215,226,234,0.07)',
+                        border: '1px solid rgba(215,226,234,0.12)',
+                        borderRadius: '999px',
+                        padding: '6px 12px',
+                        fontSize: '11px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                        color: 'rgba(215,226,234,0.72)',
+                      }}>{tech}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectPreviewArtV2({ theme }) {
+  const palettes = {
+    portfolio: ['#08111f', '#122a4a', '#b600a8', '#6e2ad1'],
+    restaurant: ['#140b10', '#3a1821', '#ff9f43', '#ffcf74'],
+    ecommerce: ['#10131c', '#1f2940', '#ff6a7a', '#7b8cff'],
+    landing: ['#0b1620', '#173249', '#41d3ff', '#f7b84b'],
+    booking: ['#0a1815', '#15312a', '#59d39c', '#b8f3db'],
+    saas: ['#08131e', '#102b42', '#7bc8ff', '#5f7cff'],
+    mobile: ['#11111a', '#26263d', '#ff8bd4', '#8c7cff'],
+    dashboard: ['#0d1218', '#1b2631', '#4cc9f0', '#90dbf4'],
+  };
+  const [bg1, bg2, a1, a2] = palettes[theme] || palettes.portfolio;
+
+  return (
+    <div style={{
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      overflow: 'hidden',
+      background: `linear-gradient(135deg, ${bg1}, ${bg2})`,
+    }}>
+      <div style={projectGlowArt(a1, '30%', '28%', 150)} />
+      <div style={projectGlowArt(a2, '78%', '72%', 110)} />
+      <div style={{
+        position: 'absolute',
+        inset: '16px',
+        borderRadius: '18px',
+        padding: '14px',
+        background: 'rgba(255,255,255,0.08)',
+        border: '1px solid rgba(255,255,255,0.14)',
+        backdropFilter: 'blur(8px)',
+        boxSizing: 'border-box',
+      }}>
+        {theme === 'portfolio' && (
+          <>
+            <div style={projectTopDots}>
+              <span style={projectWindowDot('#ff5f57')} />
+              <span style={projectWindowDot('#febc2e')} />
+              <span style={projectWindowDot('#28c840')} />
+            </div>
+            <div style={projectHeroArt}>
+              <div style={projectTinyLabel}>Portfolio Hero</div>
+              <div style={{ marginTop: '14px', width: '72%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.28)' }} />
+              <div style={{ marginTop: '10px', width: '56%', height: '12px', borderRadius: '999px', background: 'rgba(255,255,255,0.16)' }} />
+              <div style={{ marginTop: '18px', width: '42%', height: '34px', borderRadius: '999px', background: `linear-gradient(135deg, ${a1}, ${a2})` }} />
+            </div>
+          </>
+        )}
+        {theme === 'restaurant' && (
+          <>
+            {projectChip('Restaurant Menu')}
+            <div style={projectTwoCol}>
+              <div style={projectStack}>
+                {['Starter', 'Main Course', 'Dessert'].map((item, idx) => (
+                  <div key={item} style={projectRow(idx === 0)}>
+                    <span>{item}</span>
+                    <span>{idx + 1}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={projectCircleCard} />
+            </div>
+          </>
+        )}
+        {theme === 'ecommerce' && (
+          <>
+            {projectChip('E-commerce Store')}
+            <div style={projectTwoCol}>
+              <div style={projectHeroCard} />
+              <div style={projectStack}>
+                <div style={projectMiniCardV2} />
+                <div style={projectMiniCardV2} />
+                <div style={projectActionBarV2} />
+              </div>
+            </div>
+          </>
+        )}
+        {theme === 'landing' && (
+          <>
+            {projectChip('Landing Page')}
+            <div style={projectHeroArt}>
+              <div style={projectBadge}>Launch</div>
+              <div style={{ marginTop: '14px', width: '66%', height: '16px', borderRadius: '999px', background: 'rgba(255,255,255,0.34)' }} />
+              <div style={{ marginTop: '10px', width: '48%', height: '10px', borderRadius: '999px', background: 'rgba(255,255,255,0.16)' }} />
+              <div style={projectStripeV2} />
+            </div>
+          </>
+        )}
+        {theme === 'booking' && (
+          <>
+            {projectChip('Booking Site')}
+            <div style={projectBookingGridV2}>
+              <div style={projectCalendarPanelV2}>
+                {['M', 'T', 'W', 'T', 'F'].map((day) => (
+                  <span key={day} style={projectCalendarDayV2}>{day}</span>
+                ))}
+              </div>
+              <div style={projectBookingCardV2}>
+                <div style={projectTinyLine('74%', '10px', 'rgba(255,255,255,0.22)')} />
+                <div style={projectTinyLine('52%', '10px', 'rgba(255,255,255,0.14)', '10px')} />
+                <div style={projectBookingButtonV2} />
+              </div>
+            </div>
+          </>
+        )}
+        {theme === 'saas' && (
+          <>
+            {projectChip('SaaS Website')}
+            <div style={projectTwoCol}>
+              <div style={projectHeroCard} />
+              <div style={projectStack}>
+                <div style={projectMiniCardV2} />
+                <div style={{ ...projectMiniCardV2, minHeight: '60px' }} />
+                <div style={projectActionBarV2} />
+              </div>
+            </div>
+          </>
+        )}
+        {theme === 'mobile' && (
+          <>
+            {projectChip('Mobile App UI')}
+            <div style={projectMobileWrap}>
+              <div style={projectPhoneFrame}>
+                <div style={projectPhoneHeader} />
+                <div style={projectPhoneCard} />
+                <div style={projectPhoneCard} />
+              </div>
+              <div style={projectPhoneSide}>
+                <div style={projectMiniCardV2} />
+                <div style={projectMiniCardV2} />
+                <div style={projectActionBarV2} />
+              </div>
+            </div>
+          </>
+        )}
+        {theme === 'dashboard' && (
+          <>
+            {projectChip('Dashboard Panel')}
+            <div style={projectDashboardGrid}>
+              <div style={projectDashboardSidebar}>
+                <div style={projectMiniCardV2} />
+                <div style={projectMiniCardV2} />
+                <div style={projectMiniCardV2} />
+              </div>
+              <div style={projectDashboardMain}>
+                <div style={projectChartBar} />
+                <div style={projectChartGrid}>
+                  <div style={projectChartCard} />
+                  <div style={projectChartCard} />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const projectGlowArt = (color, left, top, size) => ({
+  position: 'absolute',
+  left,
+  top,
+  width: `${size}px`,
+  height: `${size}px`,
+  borderRadius: '50%',
+  background: `radial-gradient(circle, ${color}66 0%, ${color}00 70%)`,
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'none',
+});
+
+const projectTopDots = {
+  display: 'flex',
+  gap: '8px',
+  marginBottom: '14px',
+};
+
+const projectHeroArt = {
+  height: 'calc(100% - 26px)',
+  borderRadius: '16px',
+  padding: '16px',
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+};
+
+const projectTinyLabel = {
+  color: 'rgba(255,255,255,0.75)',
+  fontSize: '11px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.14em',
+};
+
+const projectBadge = {
+  width: '82px',
+  padding: '8px 12px',
+  borderRadius: '999px',
+  background: 'rgba(255,255,255,0.14)',
+  color: '#fff',
+  fontSize: '10px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.14em',
+};
+
+const projectTinyLine = (width, height, background, marginTop = '0px') => ({
+  width,
+  height,
+  borderRadius: '999px',
+  background,
+  marginTop,
+});
+
+const projectChip = (label) => (
+  <div style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '8px 14px',
+    borderRadius: '999px',
+    background: 'rgba(255,255,255,0.12)',
+    color: '#fff',
+    fontSize: '10px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    marginBottom: '14px',
+  }}>{label}</div>
+);
+
+const projectTwoCol = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 0.9fr',
+  gap: '12px',
+  height: 'calc(100% - 40px)',
+};
+
+const projectStack = {
+  display: 'grid',
+  gap: '10px',
+};
+
+const projectRow = (active) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderRadius: '14px',
+  padding: '10px 12px',
+  background: active ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  color: '#fff',
+  fontSize: '12px',
+});
+
+const projectCircleCard = {
+  borderRadius: '18px',
+  background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.34), rgba(255,255,255,0.08) 55%, rgba(0,0,0,0.22) 100%)',
+  border: '1px solid rgba(255,255,255,0.14)',
+};
+
+const projectHeroCard = {
+  borderRadius: '18px',
+  background: 'linear-gradient(135deg, rgba(255,106,122,0.38), rgba(123,140,255,0.18))',
+  border: '1px solid rgba(255,255,255,0.14)',
+};
+
+const projectMiniCardV2 = {
+  borderRadius: '14px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  minHeight: '46px',
+};
+
+const projectActionBarV2 = {
+  borderRadius: '14px',
+  background: 'linear-gradient(135deg, #ff6a7a, #7b8cff)',
+  minHeight: '34px',
+};
+
+const projectStripeV2 = {
+  marginTop: '18px',
+  height: '34px',
+  borderRadius: '999px',
+  background: 'linear-gradient(90deg, rgba(65,211,255,0), rgba(65,211,255,0.8), rgba(247,184,75,0.8))',
+};
+
+const projectBookingGridV2 = {
+  display: 'grid',
+  gridTemplateColumns: '0.9fr 1.1fr',
+  gap: '12px',
+  height: 'calc(100% - 40px)',
+};
+
+const projectCalendarPanelV2 = {
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  padding: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+};
+
+const projectCalendarDayV2 = {
+  width: '26px',
+  height: '26px',
+  borderRadius: '8px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'rgba(255,255,255,0.08)',
+  color: '#fff',
+  fontSize: '11px',
+};
+
+const projectBookingCardV2 = {
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  padding: '14px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+};
+
+const projectBookingButtonV2 = {
+  height: '34px',
+  borderRadius: '12px',
+  background: 'linear-gradient(135deg, #59d39c, #b8f3db)',
+};
+
+const projectMobileWrap = {
+  display: 'grid',
+  gridTemplateColumns: '0.95fr 1.05fr',
+  gap: '12px',
+  height: 'calc(100% - 40px)',
+};
+
+const projectPhoneFrame = {
+  borderRadius: '28px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.14)',
+  padding: '12px',
+  display: 'grid',
+  gap: '10px',
+};
+
+const projectPhoneHeader = {
+  height: '34px',
+  borderRadius: '12px',
+  background: 'rgba(255,255,255,0.12)',
+};
+
+const projectPhoneCard = {
+  minHeight: '58px',
+  borderRadius: '16px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+};
+
+const projectPhoneSide = {
+  display: 'grid',
+  gap: '10px',
+};
+
+const projectDashboardGrid = {
+  display: 'grid',
+  gridTemplateColumns: '0.7fr 1.3fr',
+  gap: '12px',
+  height: 'calc(100% - 40px)',
+};
+
+const projectDashboardSidebar = {
+  display: 'grid',
+  gap: '10px',
+};
+
+const projectDashboardMain = {
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  padding: '14px',
+  display: 'grid',
+  gap: '12px',
+};
+
+const projectChartBar = {
+  minHeight: '56px',
+  borderRadius: '16px',
+  background: 'linear-gradient(135deg, rgba(76,201,240,0.32), rgba(144,219,244,0.12))',
+  border: '1px solid rgba(255,255,255,0.12)',
+};
+
+const projectChartGrid = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '12px',
+};
+
+const projectChartCard = {
+  minHeight: '94px',
+  borderRadius: '16px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+};
+
+const projectWindowDot = (color) => ({
+  width: '10px',
+  height: '10px',
+  borderRadius: '50%',
+  background: color,
+});
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   CONTACT SECTION
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function ContactSection() {
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/kk40232@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio Inquiry from ${form.name}`,
+          _captcha: 'false',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      setSent(true);
+      setForm({ name: '', email: '', message: '' });
+    } catch (error) {
+      window.location.href = `mailto:kk40232@gmail.com?subject=Portfolio Inquiry from ${encodeURIComponent(form.name)}&body=${encodeURIComponent(form.message + '\n\nFrom: ' + form.name + '\nEmail: ' + form.email)}`;
+      setSent(true);
+    }
+  };
+
+  const inputStyle = {
+    width: '100%', background: 'rgba(215,226,234,0.05)',
+    border: '1px solid rgba(215,226,234,0.12)',
+    borderRadius: '12px', padding: '14px 18px',
+    color: '#D7E2EA', fontFamily: "'Kanit', sans-serif",
+    fontSize: 'clamp(0.85rem, 1.3vw, 1rem)', fontWeight: 300,
+    outline: 'none', transition: 'border-color 200ms ease',
+  };
+
+  return (
+    <section id="contact" style={{
+      background: '#FFFFFF',
+      borderTopLeftRadius: 'clamp(40px, 4vw, 60px)',
+      borderTopRightRadius: 'clamp(40px, 4vw, 60px)',
+      marginTop: 'clamp(-40px, -3vw, -56px)',
+      padding: 'clamp(56px, 7vw, 112px) clamp(20px, 5vw, 64px)',
+    }}>
+      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+        <FadeIn delay={0} y={40}>
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 10vw, 8rem)', fontWeight: 900,
+            textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 1,
+            color: '#0C0C0C', textAlign: 'center',
+            marginBottom: 'clamp(12px, 2vw, 20px)',
+          }}>Contact</h2>
+        </FadeIn>
+        <FadeIn delay={0.1} y={20}>
+          <p style={{
+            textAlign: 'center', color: '#0C0C0C', opacity: 0.5,
+            fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)', fontWeight: 300,
+            marginBottom: 'clamp(32px, 4vw, 56px)', letterSpacing: '0.04em',
+          }}>
+            Let's build something incredible together.
+          </p>
+        </FadeIn>
+
+        {/* Contact info row */}
+        <FadeIn delay={0.15} y={20}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 'clamp(28px, 3vw, 44px)' }}>
+            {[
+              { icon: 'Email', label: 'kk40232@gmail.com', href: 'mailto:kk40232@gmail.com' },
+              { icon: 'Phone', label: '+91 7903098527', href: 'tel:+917903098527' },
+            ].map(({ icon, label, href }) => (
+              <a key={href} href={href} style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                background: '#0C0C0C', borderRadius: '9999px',
+                padding: '10px 22px', textDecoration: 'none',
+                color: '#D7E2EA', fontSize: 'clamp(0.75rem, 1.1vw, 0.9rem)',
+                fontWeight: 400, letterSpacing: '0.04em',
+                transition: 'opacity 200ms ease',
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                <span style={{ opacity: 0.6 }}>{icon}</span>
+                <span>{label}</span>
+              </a>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Form */}
+        <FadeIn delay={0.2} y={24}>
+          {sent ? (
+            <div style={{
+              textAlign: 'center', padding: '40px',
+              background: '#0C0C0C', borderRadius: '20px',
+              color: '#D7E2EA', fontWeight: 300,
+              fontSize: '1rem', letterSpacing: '0.06em',
+            }}>
+              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>OK</div>
+              Message sent successfully.
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                <input
+                  type="text" placeholder="Your Name" required
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  style={{ ...inputStyle, flex: 1, minWidth: '180px' }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(182,0,168,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(215,226,234,0.12)'}
+                />
+                <input
+                  type="email" placeholder="Your Email" required
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  style={{ ...inputStyle, flex: 1, minWidth: '180px' }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(182,0,168,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(215,226,234,0.12)'}
+                />
+              </div>
+              <textarea
+                placeholder="Your Message" required rows={5}
+                value={form.message}
+                onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                style={{ ...inputStyle, resize: 'vertical', minHeight: '120px' }}
+                onFocus={e => e.target.style.borderColor = 'rgba(182,0,168,0.5)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(215,226,234,0.12)'}
+              />
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
+                <ContactButton label="Send Message" />
+              </div>
+            </form>
+          )}
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   FOOTER
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function Footer() {
+  return (
+    <footer style={{
+      background: '#0C0C0C',
+      padding: 'clamp(28px, 4vw, 48px) clamp(20px, 4vw, 56px)',
+      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      flexWrap: 'wrap', gap: '12px',
+      borderTop: '1px solid rgba(215,226,234,0.06)',
+    }}>
+      <div style={{ fontWeight: 900, fontSize: 'clamp(1rem, 2vw, 1.4rem)',
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+        background: 'linear-gradient(180deg, #646973 0%, #BBCCD7 100%)',
+        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      }}>Kamal Kishor</div>
+      <div style={{ fontSize: '11px', fontWeight: 300, color: 'rgba(215,226,234,0.3)',
+        letterSpacing: '0.1em', textTransform: 'uppercase',
+      }}>(c) 2025 | Web Developer</div>
+      <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+        <a
+          href="https://www.instagram.com/rockstar_kamal_143?igsh=MjBmZGwya3N4bjls"
+          aria-label="Instagram"
+          title="Instagram"
+          style={{
+            width: '42px',
+            height: '42px',
+            display: 'grid',
+            placeItems: 'center',
+            borderRadius: '50%',
+            border: '1px solid rgba(215,226,234,0.14)',
+            background: 'rgba(215,226,234,0.04)',
+            color: 'rgba(215,226,234,0.72)',
+            textDecoration: 'none',
+            transition: 'opacity 200ms ease, background 200ms ease',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(215,226,234,0.08)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(215,226,234,0.04)'}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
+        <a
+          href="https://www.facebook.com/people/K%CA%8C%C9%B1%CA%8C%C9%AD-K%C9%A9s%CA%9Co%CA%80/pfbid0yWwSRa43Mq4Ei48pKet9XDVckdecAUnmuYSx7AQBA3xL3gZdfbZ1moQPCssZKcWDl/"
+          aria-label="Facebook"
+          title="Facebook"
+          style={{
+            width: '42px',
+            height: '42px',
+            display: 'grid',
+            placeItems: 'center',
+            borderRadius: '50%',
+            border: '1px solid rgba(215,226,234,0.14)',
+            background: 'rgba(215,226,234,0.04)',
+            color: 'rgba(215,226,234,0.72)',
+            textDecoration: 'none',
+            transition: 'opacity 200ms ease, background 200ms ease',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(215,226,234,0.08)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(215,226,234,0.04)'}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M14 8.5h2.2V6H14c-2.1 0-3.5 1.5-3.5 3.7V12H8v2.8h2.5V21H13v-6.2h2.2l.4-2.8H13V9.7c0-.8.4-1.2 1-1.2z" />
+          </svg>
+        </a>
+      </div>
+    </footer>
+  );
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   APP ROOT
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+function App() {
+  return (
+    <div style={{ overflowX: 'clip', background: '#0C0C0C' }}>
+      <HeroSection />
+      <MarqueeSection />
+      <AboutSection />
+      <SkillsSection />
+      <ServicesSection />
+      <ProjectsSectionV2 />
+      <ContactSection />
+      <Footer />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
