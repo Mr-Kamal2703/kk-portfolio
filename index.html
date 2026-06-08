@@ -215,6 +215,25 @@
       margin: 0 !important;
     }
 
+    .hero-name-desktop {
+      display: none !important;
+    }
+
+    .hero-name-mobile {
+      display: block !important;
+      font-size: clamp(2.1rem, 12vw, 3.2rem) !important;
+      line-height: 0.95 !important;
+      letter-spacing: -0.05em !important;
+      text-align: center !important;
+      text-transform: uppercase;
+      font-weight: 900;
+      background: linear-gradient(180deg, #BBCCD7 0%, #646973 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 6px 0 0 !important;
+    }
+
     #hero h1 {
       font-size: clamp(1.9rem, 13vw, 3rem) !important;
       white-space: normal !important;
@@ -431,8 +450,11 @@ function HeroSection() {
             marginBottom: 'clamp(8px, 1.5vw, 16px)',
           }}>AI Web Developer Creating Premium Cinematic Websites</p>
         </FadeIn>
+        <FadeIn delay={0.14} y={54}>
+          <h1 className="hero-name-mobile" style={{ display: 'none' }}>Kamal Kishor</h1>
+        </FadeIn>
         <FadeIn delay={0.18} y={60}>
-          <h1 style={{
+          <h1 className="hero-name-desktop" style={{
             fontSize: 'clamp(3.5rem, 14vw, 18rem)', fontWeight: 900,
             textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.92,
             whiteSpace: 'nowrap',
@@ -442,7 +464,7 @@ function HeroSection() {
           }}>Kamal</h1>
         </FadeIn>
         <FadeIn delay={0.26} y={60}>
-          <h1 style={{
+          <h1 className="hero-name-desktop" style={{
             fontSize: 'clamp(3.5rem, 14vw, 18rem)', fontWeight: 900,
             textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.92,
             whiteSpace: 'nowrap',
